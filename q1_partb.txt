@@ -1,0 +1,6 @@
+/home/dcompgriff/.pyenv/versions/anaconda3-4.1.1/bin/python /home/dcompgriff/file_home/ProgramWorkspaces/MachineLearning/UWisc_ML/CS532_HW7_Regularization/HW7.py
+Running main...
+Time to solve with transpose on right: 2.06
+Time to solve with transpose on left: 3435.40
+
+Process finished with exit code 0
