@@ -60,13 +60,14 @@ def q3():
     A = A[:, 1:]
 
     #Set up the parameters of the equation.
-    #q3_partabc(A, b)
-    q3_partd(A, b)
+    #q3_partab(A, b)
+    q3_partc(A, b)
+    #q3_partd(A, b)
 
 
 
 
-def q3_partabc(A, b):
+def q3_partab(A, b):
     lambdValues = [.001, .01, .1, .5,  1, 5, 10, 50, 100]
 
     # Set up the parameters of the equation.
@@ -128,7 +129,41 @@ def q3_partabc(A, b):
     plt.title('Error Sparsity Trade-Off Curve')
     plt.show()
 
-    #PART C
+def q3_partc(A, b):
+    lambdValues = [.001, .01, .1, .5, 1, 5, 10, 50, 100]
+
+    # Set up the parameters of the equation.
+    lambd = cvx.Parameter(sign="positive")
+    lambd.value = 0.01
+    Areduced = A[:100, :]
+    breduced = b[:100]
+    x = cvx.Variable(A.shape[1])
+    error = cvx.sum_squares(Areduced * x - breduced)
+    objective = cvx.Minimize(error + (lambd * cvx.norm1(x)))
+    prob = cvx.Problem(objective)
+
+    # PART A
+    sq_err = []
+    l1_err = []
+    optimalX = []
+    for val in lambdValues:
+        print('Solving lambda: %f' % (val))
+        # Solve the problem with the new lambda.
+        lambd.value = val
+        prob.solve()
+        # Calculate the error and optimal x.
+        sq_err.append(cvx.sum_squares(A[100:, :] * x - b[100:]).value)
+        l1_err.append(cvx.norm1(x).value)
+        optimalX.append(np.array(x.value))
+
+    # Plot the trade off curve.
+    plt.plot(l1_err, sq_err)
+    plt.xlabel('|x|_1')
+    plt.ylabel('|Ax-b|^2')
+    plt.title('Trade-Off Curve for LASSO')
+    plt.show()
+
+    #Error rate tradeoff curve
     errorRateList = []
     sparsityList = []
     for xopt in optimalX:
@@ -150,13 +185,16 @@ def q3_partabc(A, b):
     plt.plot(sparsityList, errorRateList)
     plt.scatter(sparsityList, errorRateList, color='r')
     plt.ylabel('validation error rate')
-    plt.xlabel('\sparsity')
+    plt.xlabel('sparsity')
     plt.title('Validation Error Sparsity Trade-Off Curve')
     plt.show()
 
 
-def q3_partd():
-    pass
+def q3_partd(A, b):
+    indexArray = list(range(0, A.shape[0]))
+
+
+
 
 def calculateAccuracy(yactual, ypredicted, epsilon=1e-10):
     metrics = {}
