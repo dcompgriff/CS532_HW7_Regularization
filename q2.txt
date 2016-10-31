@@ -1,0 +1,12 @@
+/home/dcompgriff/.pyenv/versions/anaconda3-4.1.1/bin/python /home/dcompgriff/file_home/ProgramWorkspaces/MachineLearning/UWisc_ML/CS532_HW7_Regularization/HW7.py
+Running main...
+Normal Equation Solution: 
+[[ 2.2803765]
+ [ 1.4560753]]
+
+CVX Optimal value: 4.187673
+CVX Optimal x: 
+[[ 2.2812872 ]
+ [ 1.45790064]]
+
+Process finished with exit code 0
