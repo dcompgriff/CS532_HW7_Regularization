@@ -1,0 +1,30 @@
+/home/dcompgriff/.pyenv/versions/anaconda3-4.1.1/bin/python /home/dcompgriff/file_home/ProgramWorkspaces/MachineLearning/UWisc_ML/CS532_HW7_Regularization/HW7.py
+Running main...
+Runing q3 partd, section i
+/home/dcompgriff/file_home/ProgramWorkspaces/MachineLearning/UWisc_ML/CS532_HW7_Regularization/HW7.py:226: FutureWarning: comparison to `None` will result in an elementwise object comparison in the future.
+  if Atrain == None:
+Runing q3 partd, section ii
+Solving lambda: 0.000100
+Solving lambda: 0.001000
+Solving lambda: 0.010000
+Solving lambda: 0.100000
+Solving lambda: 0.500000
+Solving lambda: 1.000000
+Solving lambda: 5.000000
+Solving lambda: 10.000000
+Solving lambda: 50.000000
+Solving lambda: 100.000000
+Solving lambda: 0.000100
+Solving lambda: 0.001000
+Solving lambda: 0.010000
+Solving lambda: 0.100000
+Solving lambda: 0.500000
+Solving lambda: 1.000000
+Solving lambda: 5.000000
+Solving lambda: 10.000000
+Solving lambda: 50.000000
+Solving lambda: 100.000000
+Runing q3 partd, section iii
+Runing q3 partd, section iv
+Ridge test accuracy: 0.933333
+LASSO test accuracy: 1.000000

@@ -61,8 +61,8 @@ def q3():
 
     #Set up the parameters of the equation.
     #q3_partab(A, b)
-    q3_partc(A, b)
-    #q3_partd(A, b)
+    #q3_partc(A, b)
+    q3_partd(A, b)
 
 
 
@@ -191,9 +191,132 @@ def q3_partc(A, b):
 
 
 def q3_partd(A, b):
+    lambdValues = [.0001, .001, .01, .1, .5, 1, 5, 10, 50, 100]
     indexArray = list(range(0, A.shape[0]))
+    subsetList = []
+    subsets = []
+    classes = []
 
+    #PART i
+    print('Runing q3 partd, section i')
+    #Make 5 random subset index lists of size 29.
+    for i in range(0, 5):
+        subsetList.append([])
+        for m in range(0, 29):
+            randi = rand.randint(0, len(indexArray)-1)
+            subsetList[i].append(indexArray[randi])
+            del indexArray[randi]
+    #Make 5 random subset index lists of size 30.
+    for i in range(5, 10):
+        subsetList.append([])
+        for m in range(0, 30):
+            randi = rand.randint(0, len(indexArray)-1)
+            subsetList[i].append(indexArray[randi])
+            del indexArray[randi]
+    #Make actual data subsets out of the
+    for i in range(0, len(subsetList)):
+        subsets.append(A[subsetList[i]])
+        classes.append(b[subsetList[i]])
 
+    #PART ii (data sets 0 through 7)
+    print('Runing q3 partd, section ii')
+    Atrain = None
+    btrain = None
+    for i in range(0, 8):
+        if Atrain == None:
+            Atrain = subsets[i]
+            btrain = classes[i]
+        else:
+            Atrain = np.vstack((Atrain, subsets[i]))
+            btrain = np.vstack((btrain, classes[i]))
+    # Set up the parameters of the equation for LASSO.
+    lambd = cvx.Parameter(sign="positive")
+    lambd.value = 0.01
+    x = cvx.Variable(A.shape[1])
+    objective = cvx.Minimize(cvx.sum_squares(Atrain * x - btrain) + (lambd * cvx.norm1(x)))
+    prob = cvx.Problem(objective)
+    optimalRidgeX = []
+    optimalLassoX = []
+    #Find optimal lasso x's
+    for val in lambdValues:
+        print('Solving lambda: %f' % (val))
+        # Solve the problem with the new lambda.
+        lambd.value = val
+        prob.solve()
+        optimalLassoX.append(np.array(x.value))
+    #Find optimal ridge x's
+    prob.objective = cvx.Minimize(cvx.sum_squares(Atrain * x - btrain) + (lambd *cvx.sum_entries(cvx.square(x))))
+    for val in lambdValues:
+        print('Solving lambda: %f' % (val))
+        # Solve the problem with the new lambda.
+        lambd.value = val
+        prob.solve()
+        optimalRidgeX.append(np.array(x.value))
+
+    #PART iii
+    print('Runing q3 partd, section iii')
+    Atuning = subsets[8]
+    btuning = classes[8]
+    bestLassoX = optimalLassoX[0]
+    bestLassoAccuracy = 0
+    bestRidgeX = optimalRidgeX[0]
+    bestRidgeAccuracy = 0
+    #Find best Lasso
+    for xopt in optimalLassoX:
+        ypredicted = []
+        for data in Atuning:
+            predVal = data.reshape(1, data.size).dot(xopt.reshape(xopt.size, 1))
+            if predVal > 0:
+                predVal = 1
+            else:
+                predVal = -1
+            ypredicted.append(predVal)
+        accuracy = calculateAccuracy(btuning, ypredicted)
+        if accuracy > bestLassoAccuracy:
+            bestLassoAccuracy = accuracy
+            bestLassoX = xopt
+    #Find best Ridge
+    for xopt in optimalRidgeX:
+        ypredicted = []
+        for data in Atuning:
+            predVal = data.reshape(1, data.size).dot(xopt.reshape(xopt.size, 1))
+            if predVal > 0:
+                predVal = 1
+            else:
+                predVal = -1
+            ypredicted.append(predVal)
+        accuracy = calculateAccuracy(btuning, ypredicted)
+        if accuracy > bestRidgeAccuracy:
+            bestRidgeAccuracy = accuracy
+            bestRidgeX = xopt
+
+    #PART iv
+    print('Runing q3 partd, section iv')
+    #Calculate test accuracy for LASSO.
+    Atest = subsets[9]
+    btest = classes[9]
+    ypredicted = []
+    for data in Atest:
+        predVal = data.reshape(1, data.size).dot(bestLassoX.reshape(bestLassoX.size, 1))
+        if predVal > 0:
+            predVal = 1
+        else:
+            predVal = -1
+        ypredicted.append(predVal)
+    lassoAccuracy = calculateAccuracy(btest, ypredicted)
+    #Calculate test accuracy for RIDGE.
+    ypredicted = []
+    for data in Atest:
+        predVal = data.reshape(1, data.size).dot(bestRidgeX.reshape(bestRidgeX.size, 1))
+        if predVal > 0:
+            predVal = 1
+        else:
+            predVal = -1
+        ypredicted.append(predVal)
+    ridgeAccuracy = calculateAccuracy(btest, ypredicted)
+
+    print('Ridge test accuracy: %f' % (ridgeAccuracy))
+    print('LASSO test accuracy: %f' % (lassoAccuracy))
 
 
 def calculateAccuracy(yactual, ypredicted, epsilon=1e-10):
