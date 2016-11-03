@@ -6,10 +6,6 @@ import matplotlib.pyplot as plt
 from multiprocessing import Pool
 
 
-
-
-
-
 def q1_partb():
     A = np.random.rand(8000*100).reshape((8000, 100))
     b = np.random.rand(8000).reshape((8000, 1))
@@ -60,12 +56,9 @@ def q3():
     A = A[:, 1:]
 
     #Set up the parameters of the equation.
-    #q3_partab(A, b)
-    #q3_partc(A, b)
+    q3_partab(A, b)
+    q3_partc(A, b)
     q3_partd(A, b)
-
-
-
 
 def q3_partab(A, b):
     lambdValues = [.001, .01, .1, .5,  1, 5, 10, 50, 100]
@@ -142,7 +135,7 @@ def q3_partc(A, b):
     objective = cvx.Minimize(error + (lambd * cvx.norm1(x)))
     prob = cvx.Problem(objective)
 
-    # PART A
+    # PART C
     sq_err = []
     l1_err = []
     optimalX = []
@@ -340,8 +333,8 @@ def countNonzero(x, epsilon=1e-5):
 
 def main():
     print('Running main...')
-    #q1_partb()
-    #q2()
+    q1_partb()
+    q2()
     q3()
 
 
